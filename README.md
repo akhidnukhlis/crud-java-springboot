@@ -1,1 +1,1 @@
-# crud-java-springboot
+# simple-crud-java-springboot
