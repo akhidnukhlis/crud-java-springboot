@@ -8,8 +8,10 @@ import akhidnukhlis.crudspringapi.model.StoreResponse;
 import akhidnukhlis.crudspringapi.repository.StoreRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -38,6 +40,14 @@ public class StoreService {
         store.setUser(user);
 
         storeRepository.save(store);
+
+        return toStoreResponse(store);
+    }
+
+    @Transactional(readOnly = true)
+    public StoreResponse get(User user, String id) {
+        Store store = storeRepository.findFirstByUserAndId(user, id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found"));
 
         return toStoreResponse(store);
     }
