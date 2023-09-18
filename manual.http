@@ -5,9 +5,9 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username" : "khannedy",
+  "username" : "akhidnukhlis",
   "password" : "rahasia",
-  "name" : "Eko Kurniawan"
+  "name" : "Akhid  Nukhlis"
 }
 
 ### Login
@@ -17,7 +17,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "khannedy",
+  "username": "akhidnukhlis",
   "password": "rahasia"
 }
 
@@ -34,7 +34,7 @@ Content-Type: application/json
 X-API-TOKEN: 53c9e04e-3aea-44a7-b185-52faa0329239
 
 {
-  "name" : "Eko Kurniawan Khannedy"
+  "name" : "Akhid  Nukhlis  "
 }
 
 ### Create Contact

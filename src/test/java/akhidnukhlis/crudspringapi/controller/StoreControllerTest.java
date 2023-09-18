@@ -1,5 +1,6 @@
 package akhidnukhlis.crudspringapi.controller;
 
+import akhidnukhlis.crudspringapi.entity.Contact;
 import akhidnukhlis.crudspringapi.entity.Store;
 import akhidnukhlis.crudspringapi.entity.User;
 import akhidnukhlis.crudspringapi.model.*;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -187,7 +189,7 @@ public class StoreControllerTest {
         User user = userRepository.findById("test").orElse(null);
 
         Store store = new Store();
-        store.setId("d66c2b2f-1ef8-46c8-88c7-5f7b8ee7c25a");
+        store.setId(UUID.randomUUID().toString());
         store.setStoreName("Toko Kue");
         store.setPhone("0912345678");
         store.setEmail("toko@kue.com");
@@ -206,7 +208,7 @@ public class StoreControllerTest {
         request.setZipCode("12345");
 
         mockMvc.perform(
-                put("/api/stores/d66c2b2f-1ef8-46c8-88c7-5f7b8ee7c25a")
+                put("/api/stores/" + store.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -226,4 +228,126 @@ public class StoreControllerTest {
         });
     }
 
+    @Test
+    void deleteStoreNotFound() throws Exception {
+        mockMvc.perform(
+                delete("/api/stores/12345")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test")
+        ).andExpectAll(
+                status().isNotFound()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<WebResponse<String>>() {
+            });
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void deleteStoreSuccess() throws Exception {
+        User user = userRepository.findById("test").orElse(null);
+
+        Store store = new Store();
+        store.setId(UUID.randomUUID().toString());
+        store.setStoreName("Toko Kue");
+        store.setPhone("0912345678");
+        store.setEmail("toko@kue.com");
+        store.setStreet("Jln A");
+        store.setCity("Yogyakarta");
+        store.setState("Indonesia");
+        store.setZipCode("55555");
+        store.setUser(user);
+        storeRepository.save(store);
+
+        mockMvc.perform(
+                delete("/api/stores/" + store.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+            assertNull(response.getErrors());
+            assertEquals("OK", response.getData());
+        });
+    }
+
+    @Test
+    void searchStoreNotFound() throws Exception {
+        mockMvc.perform(
+                get("/api/stores")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<List<StoreResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+            assertNull(response.getErrors());
+            assertEquals(0, response.getData().size());
+            assertEquals(0, response.getPaging().getTotalPage());
+            assertEquals(0, response.getPaging().getCurrentPage());
+            assertEquals(10, response.getPaging().getSize());
+        });
+    }
+
+    @Test
+    void searchStoreSuccess() throws Exception {
+        User user = userRepository.findById("test").orElse(null);
+
+        for (int i = 0; i < 100; i++) {
+            Store store = new Store();
+            store.setId(UUID.randomUUID().toString());
+            store.setStoreName("Toko" + i);
+            store.setPhone("0912345678");
+            store.setEmail("toko@kue.com");
+            store.setStreet("Jln A No." + i);
+            store.setCity("Yogyakarta");
+            store.setState("Indonesia");
+            store.setZipCode("55555");
+            store.setUser(user);
+            storeRepository.save(store);
+        }
+
+        mockMvc.perform(
+                get("/api/stores")
+                        .queryParam("name_store", "Toko")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<List<StoreResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+            assertNull(response.getErrors());
+            assertEquals(10, response.getData().size());
+            assertEquals(10, response.getPaging().getTotalPage());
+            assertEquals(0, response.getPaging().getCurrentPage());
+            assertEquals(10, response.getPaging().getSize());
+        });
+
+
+        mockMvc.perform(
+                get("/api/stores")
+                        .queryParam("city", "Yogyakarta")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<List<StoreResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+            assertNull(response.getErrors());
+            assertEquals(10, response.getData().size());
+            assertEquals(10, response.getPaging().getTotalPage());
+            assertEquals(0, response.getPaging().getCurrentPage());
+            assertEquals(10, response.getPaging().getSize());
+        });
+    }
 }
