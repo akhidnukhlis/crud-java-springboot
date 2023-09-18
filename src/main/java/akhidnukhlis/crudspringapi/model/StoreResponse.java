@@ -1,6 +1,6 @@
 package akhidnukhlis.crudspringapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,25 +12,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateAddressRequest {
+public class StoreResponse {
 
-    @JsonIgnore
-    @NotBlank
-    private String contactId;
+    private  String id;
 
-    @Size(max = 200)
+    private String storeName;
+
+    private String phone;
+
+    private String email;
+
     private String street;
 
-    @Size(max = 100)
     private String city;
 
-    @Size(max = 100)
-    private String province;
+    private String state;
 
-    @NotBlank
-    @Size(max = 100)
-    private String country;
-
-    @Size(max = 10)
-    private String postalCode;
+    private String zipCode;
 }

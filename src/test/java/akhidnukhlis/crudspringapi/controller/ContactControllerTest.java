@@ -80,9 +80,9 @@ class ContactControllerTest {
     @Test
     void createContactSuccess() throws Exception {
         CreateContactRequest request = new CreateContactRequest();
-        request.setFirstName("Eko");
-        request.setLastName("Khannedy");
-        request.setEmail("eko@example.com");
+        request.setFirstName("Akhid");
+        request.setLastName("nukhlis");
+        request.setEmail("Akhid@example.com");
         request.setPhone("42342342344");
 
         mockMvc.perform(
@@ -97,9 +97,9 @@ class ContactControllerTest {
             WebResponse<ContactResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
             });
             assertNull(response.getErrors());
-            assertEquals("Eko", response.getData().getFirstName());
-            assertEquals("Khannedy", response.getData().getLastName());
-            assertEquals("eko@example.com", response.getData().getEmail());
+            assertEquals("Akhid", response.getData().getFirstName());
+            assertEquals("nukhlis", response.getData().getLastName());
+            assertEquals("Akhid@example.com", response.getData().getEmail());
             assertEquals("42342342344", response.getData().getPhone());
 
             assertTrue(contactRepository.existsById(response.getData().getId()));
@@ -129,9 +129,9 @@ class ContactControllerTest {
         Contact contact = new Contact();
         contact.setId(UUID.randomUUID().toString());
         contact.setUser(user);
-        contact.setFirstName("Eko");
-        contact.setLastName("Khanedy");
-        contact.setEmail("eko@example.com");
+        contact.setFirstName("Akhid");
+        contact.setLastName("Nukhlis");
+        contact.setEmail("Akhid@example.com");
         contact.setPhone("9238423432");
         contactRepository.save(contact);
 
@@ -183,9 +183,9 @@ class ContactControllerTest {
         Contact contact = new Contact();
         contact.setId(UUID.randomUUID().toString());
         contact.setUser(user);
-        contact.setFirstName("Eko");
-        contact.setLastName("Khanedy");
-        contact.setEmail("eko@example.com");
+        contact.setFirstName("Akhid");
+        contact.setLastName("Nukhlis");
+        contact.setEmail("Akhid@example.com");
         contact.setPhone("9238423432");
         contactRepository.save(contact);
 
@@ -239,9 +239,9 @@ class ContactControllerTest {
         Contact contact = new Contact();
         contact.setId(UUID.randomUUID().toString());
         contact.setUser(user);
-        contact.setFirstName("Eko");
-        contact.setLastName("Khanedy");
-        contact.setEmail("eko@example.com");
+        contact.setFirstName("Akhid");
+        contact.setLastName("Nukhlis");
+        contact.setEmail("Akhid@example.com");
         contact.setPhone("9238423432");
         contactRepository.save(contact);
 
@@ -288,16 +288,16 @@ class ContactControllerTest {
             Contact contact = new Contact();
             contact.setId(UUID.randomUUID().toString());
             contact.setUser(user);
-            contact.setFirstName("Eko " + i);
-            contact.setLastName("Khanedy");
-            contact.setEmail("eko@example.com");
+            contact.setFirstName("Akhid " + i);
+            contact.setLastName("Nukhlis");
+            contact.setEmail("Akhid@example.com");
             contact.setPhone("9238423432");
             contactRepository.save(contact);
         }
 
         mockMvc.perform(
                 get("/api/contacts")
-                        .queryParam("name", "Eko")
+                        .queryParam("name", "Akhid")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "test")
@@ -315,7 +315,7 @@ class ContactControllerTest {
 
         mockMvc.perform(
                 get("/api/contacts")
-                        .queryParam("name", "Khanedy")
+                        .queryParam("name", "Nukhlis")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "test")

@@ -1,23 +1,30 @@
 package akhidnukhlis.crudspringapi.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContactResponse {
+@Builder
+public class SearchStoreRequest {
 
-    private String id;
-
-    private String firstName;
-
-    private String lastName;
+    private String storeName;
 
     private String email;
 
     private String phone;
+
+    private String city;
+
+    private String state;
+
+    @NotNull
+    private Integer page;
+
+    @NotNull
+    private Integer size;
 }
