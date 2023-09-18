@@ -19,8 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -105,6 +104,7 @@ public class StoreControllerTest {
             assertTrue(storeRepository.existsById(response.getData().getId()));
         });
     }
+
     @Test
     void getStoreNotFound() throws Exception {
         mockMvc.perform(
@@ -160,4 +160,70 @@ public class StoreControllerTest {
             assertEquals(store.getZipCode(), response.getData().getZipCode());
         });
     }
+
+    @Test
+    void updateContactBadRequest() throws Exception {
+        UpdateStoreRequest request = new UpdateStoreRequest();
+        request.setStoreName("");
+        request.setEmail("wrong");
+
+        mockMvc.perform(
+                put("/api/stores/1234")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .header("X-API-TOKEN", "test")
+        ).andExpectAll(
+                status().isBadRequest()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<WebResponse<String>>() {
+            });
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void updateStoreSuccess() throws Exception {
+        User user = userRepository.findById("test").orElse(null);
+
+        Store store = new Store();
+        store.setId("d66c2b2f-1ef8-46c8-88c7-5f7b8ee7c25a");
+        store.setStoreName("Toko Kue");
+        store.setPhone("0912345678");
+        store.setEmail("toko@kue.com");
+        store.setStreet("Jln A");
+        store.setCity("Yogyakarta");
+        store.setState("Indonesia");
+        store.setZipCode("55555");
+        store.setUser(user);
+        storeRepository.save(store);
+
+        UpdateStoreRequest request = new UpdateStoreRequest();
+        request.setStoreName("Toko Buku");
+        request.setPhone("8765432190");
+        request.setEmail("toko@buku.com");
+        request.setStreet("Jln BK");
+        request.setZipCode("12345");
+
+        mockMvc.perform(
+                put("/api/stores/d66c2b2f-1ef8-46c8-88c7-5f7b8ee7c25a")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .header("X-API-TOKEN", "test")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<StoreResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+            assertNull(response.getErrors());
+            assertEquals(request.getStoreName(), response.getData().getStoreName());
+            assertEquals(request.getPhone(), response.getData().getPhone());
+            assertEquals(request.getStreet(), response.getData().getStreet());
+            assertEquals(request.getZipCode(), response.getData().getZipCode());
+
+            assertTrue(storeRepository.existsById(response.getData().getId()));
+        });
+    }
+
 }

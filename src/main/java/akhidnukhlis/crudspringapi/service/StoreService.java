@@ -5,6 +5,8 @@ import akhidnukhlis.crudspringapi.entity.Store;
 import akhidnukhlis.crudspringapi.entity.User;
 import akhidnukhlis.crudspringapi.model.CreateStoreRequest;
 import akhidnukhlis.crudspringapi.model.StoreResponse;
+import akhidnukhlis.crudspringapi.model.UpdateStoreRequest;
+import akhidnukhlis.crudspringapi.model.UpdateUserRequest;
 import akhidnukhlis.crudspringapi.repository.StoreRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,26 @@ public class StoreService {
     public StoreResponse get(User user, String id) {
         Store store = storeRepository.findFirstByUserAndId(user, id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found"));
+
+        return toStoreResponse(store);
+    }
+
+    @Transactional
+    public StoreResponse update(User user, UpdateStoreRequest request) {
+        validationService.validate(request);
+
+        Store store = storeRepository.findFirstByUserAndId(user, request.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found"));
+
+        store.setStoreName(request.getStoreName());
+        store.setPhone(request.getPhone());
+        store.setEmail(request.getEmail());
+        store.setStreet(request.getStreet());
+        store.setCity(request.getCity());
+        store.setState(request.getState());
+        store.setZipCode(request.getZipCode());
+
+        storeRepository.save(store);
 
         return toStoreResponse(store);
     }
