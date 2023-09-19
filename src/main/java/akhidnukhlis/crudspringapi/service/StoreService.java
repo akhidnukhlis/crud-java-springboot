@@ -35,7 +35,7 @@ public class StoreService {
     private ValidationService validationService;
 
     @Transactional
-    public StoreResponse create(User user, CreateStoreRequest request) {
+    public StoreResponse create(CreateStoreRequest request) {
         validationService.validate(request);
 
         Store store = new Store();
@@ -47,7 +47,6 @@ public class StoreService {
         store.setCity(request.getCity());
         store.setState(request.getState());
         store.setZipCode(request.getZipCode());
-        store.setUser(user);
 
         storeRepository.save(store);
 
@@ -55,18 +54,18 @@ public class StoreService {
     }
 
     @Transactional(readOnly = true)
-    public StoreResponse get(User user, String id) {
-        Store store = storeRepository.findFirstByUserAndId(user, id)
+    public StoreResponse get(String id) {
+        Store store = storeRepository.findFirstById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found"));
 
         return toStoreResponse(store);
     }
 
     @Transactional
-    public StoreResponse update(User user, UpdateStoreRequest request) {
+    public StoreResponse update(UpdateStoreRequest request) {
         validationService.validate(request);
 
-        Store store = storeRepository.findFirstByUserAndId(user, request.getId())
+        Store store = storeRepository.findFirstById(request.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found"));
 
         store.setStoreName(request.getStoreName());
@@ -83,18 +82,17 @@ public class StoreService {
     }
 
     @Transactional
-    public void delete(User user, String storeId) {
-        Store store = storeRepository.findFirstByUserAndId(user, storeId)
+    public void delete(String storeId) {
+        Store store = storeRepository.findFirstById(storeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Store not found"));
 
         storeRepository.delete(store);
     }
 
     @Transactional(readOnly = true)
-    public Page<StoreResponse> search(User user, SearchStoreRequest request) {
+    public Page<StoreResponse> search(SearchStoreRequest request) {
         Specification<Store> specification = (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            predicates.add(builder.equal(root.get("user"), user));
             if (Objects.nonNull(request.getStoreName())) {
                 predicates.add(builder.or(
                         builder.like(root.get("storeName"), "%" + request.getStoreName() + "%")

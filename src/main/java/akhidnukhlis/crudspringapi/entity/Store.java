@@ -33,8 +33,4 @@ public class Store {
 
     @Column(name = "zip_code")
     private String zipCode;
-
-    @ManyToOne
-    @JoinColumn(name = "username", referencedColumnName = "username")
-    private User user;
 }
