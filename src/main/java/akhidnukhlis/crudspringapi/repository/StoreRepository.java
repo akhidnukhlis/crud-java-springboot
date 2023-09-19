@@ -16,5 +16,5 @@ import java.util.Optional;
 @Repository
 public interface StoreRepository extends JpaRepository<Store, String>, JpaSpecificationExecutor<Store>  {
 
-    Optional<Store> findFirstByUserAndId(User user, String id);
+    Optional<Store> findFirstById(String id);
 }
