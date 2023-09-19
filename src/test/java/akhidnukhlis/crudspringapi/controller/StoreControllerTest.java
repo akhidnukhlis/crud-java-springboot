@@ -319,7 +319,6 @@ public class StoreControllerTest {
             assertEquals(10, response.getPaging().getSize());
         });
 
-
         mockMvc.perform(
                 get("/api/stores")
                         .queryParam("city", "Yogyakarta")
