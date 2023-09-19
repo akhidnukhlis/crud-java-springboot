@@ -1,7 +1,5 @@
 package akhidnukhlis.crudspringapi.service;
 
-import akhidnukhlis.crudspringapi.entity.Address;
-import akhidnukhlis.crudspringapi.entity.Contact;
 import akhidnukhlis.crudspringapi.entity.Store;
 import akhidnukhlis.crudspringapi.entity.User;
 import akhidnukhlis.crudspringapi.model.*;

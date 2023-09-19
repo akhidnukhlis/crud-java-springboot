@@ -183,8 +183,6 @@ public class StoreControllerTest {
 
     @Test
     void updateStoreSuccess() throws Exception {
-        User user = userRepository.findById("test").orElse(null);
-
         Store store = new Store();
         store.setId(UUID.randomUUID().toString());
         store.setStoreName("Toko Kue");
@@ -242,8 +240,6 @@ public class StoreControllerTest {
 
     @Test
     void deleteStoreSuccess() throws Exception {
-        User user = userRepository.findById("test").orElse(null);
-
         Store store = new Store();
         store.setId(UUID.randomUUID().toString());
         store.setStoreName("Toko Kue");
@@ -292,8 +288,6 @@ public class StoreControllerTest {
 
     @Test
     void searchStoreSuccess() throws Exception {
-        User user = userRepository.findById("test").orElse(null);
-
         for (int i = 0; i < 100; i++) {
             Store store = new Store();
             store.setId(UUID.randomUUID().toString());
@@ -324,7 +318,6 @@ public class StoreControllerTest {
             assertEquals(0, response.getPaging().getCurrentPage());
             assertEquals(10, response.getPaging().getSize());
         });
-
 
         mockMvc.perform(
                 get("/api/stores")
