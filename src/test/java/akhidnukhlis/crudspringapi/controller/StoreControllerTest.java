@@ -125,8 +125,6 @@ public class StoreControllerTest {
 
     @Test
     void getStoreSuccess() throws Exception {
-        User user = userRepository.findById("test").orElse(null);
-
         Store store = new Store();
         store.setId(UUID.randomUUID().toString());
         store.setStoreName("toko-buah");
@@ -136,7 +134,6 @@ public class StoreControllerTest {
         store.setCity("Yogyakarta");
         store.setState("Indonesia");
         store.setZipCode("55555");
-        store.setUser(user);
 
         storeRepository.save(store);
 
@@ -186,8 +183,6 @@ public class StoreControllerTest {
 
     @Test
     void updateStoreSuccess() throws Exception {
-        User user = userRepository.findById("test").orElse(null);
-
         Store store = new Store();
         store.setId(UUID.randomUUID().toString());
         store.setStoreName("Toko Kue");
@@ -197,7 +192,6 @@ public class StoreControllerTest {
         store.setCity("Yogyakarta");
         store.setState("Indonesia");
         store.setZipCode("55555");
-        store.setUser(user);
         storeRepository.save(store);
 
         UpdateStoreRequest request = new UpdateStoreRequest();
@@ -246,8 +240,6 @@ public class StoreControllerTest {
 
     @Test
     void deleteStoreSuccess() throws Exception {
-        User user = userRepository.findById("test").orElse(null);
-
         Store store = new Store();
         store.setId(UUID.randomUUID().toString());
         store.setStoreName("Toko Kue");
@@ -257,7 +249,6 @@ public class StoreControllerTest {
         store.setCity("Yogyakarta");
         store.setState("Indonesia");
         store.setZipCode("55555");
-        store.setUser(user);
         storeRepository.save(store);
 
         mockMvc.perform(
@@ -297,8 +288,6 @@ public class StoreControllerTest {
 
     @Test
     void searchStoreSuccess() throws Exception {
-        User user = userRepository.findById("test").orElse(null);
-
         for (int i = 0; i < 100; i++) {
             Store store = new Store();
             store.setId(UUID.randomUUID().toString());
@@ -309,7 +298,6 @@ public class StoreControllerTest {
             store.setCity("Yogyakarta");
             store.setState("Indonesia");
             store.setZipCode("55555");
-            store.setUser(user);
             storeRepository.save(store);
         }
 
